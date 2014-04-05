@@ -8,7 +8,7 @@ module Satellite
 
     def draw
       left = (window.width / 2) - (image.width / 2)
-      image.draw(left, window.height - 128, 0)
+      image.draw(left, window.height - 192, 0)
     end
   end
 end

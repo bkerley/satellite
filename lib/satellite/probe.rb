@@ -1,6 +1,6 @@
 module Satellite
   class Probe < Sprite
-    attr_reader :x, :y, :did_reset
+    attr_reader :x, :y, :d_x, :did_reset
     def initialize(window)
       super window
       Signal.instance.probe = self

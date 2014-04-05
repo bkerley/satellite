@@ -6,11 +6,12 @@ module Satellite
     end
 
     def draw
-      scale = 1 + (@window.music.beat * 0.25)
+      scale = 1 #+ (@window.music.beat * 0.25)
+      v_scale = 1 - (@window.music.beat * 0.05)
       x = (@window.width - (scale * @image.width)) / 2
-      y = @window.height - @image.height
+      y = @window.height - (v_scale * @image.height)
       
-      @image.draw x, y, 0, scale
+      @image.draw x, y, 0, scale, v_scale
     end
   end
 end

@@ -34,7 +34,7 @@ module Satellite
     end
 
     def base
-      window.height - 110
+      window.height - 174
     end
 
     private

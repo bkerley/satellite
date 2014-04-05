@@ -78,11 +78,7 @@ module Satellite
     end
 
     def draw
-      write_line sprintf("Ticks: %d       Best: %d", @score, @best_score)
-      write_line "Last cycle: %d%%" % @last_cycle
       write_line "Difficulty: %1.2f" % Stage.instance.difficulty
-      write_line "Frame time: %.0f ms" % (@last_frame * 1000)
-      write_line "FPS %d" % (1 / @last_frame)
 
       lazer if acceptable?
       if @hit_goal
@@ -122,7 +118,12 @@ module Satellite
       return if @hit_goal
       if @score > GOAL
         @hit_goal = true
+        Stage.instance.winning = true
       end
+    end
+
+    def draw_doof
+      
     end
 
     def draw_progress

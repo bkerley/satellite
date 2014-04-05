@@ -23,6 +23,15 @@ module Satellite
       self.start = now
     end
 
+    def seed
+      c = current.to_i
+      c - (c % MSPB)
+    end
+
+    def rand(*args)
+      Random.new(seed).rand(*args)
+    end
+    
     def beat
       peaky((current.to_i % MSPB) / MSPB)
     end
