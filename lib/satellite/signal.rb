@@ -27,6 +27,15 @@ module Satellite
       return a
     end
 
+    def signal_strength
+      divisor = ((angle_difference / 4) ** 2) + 1
+      1.0 / divisor
+    end
+
+    def acceptable?
+      signal_strength > 0.5
+    end
+
     def window=(value)
       @window = value
       setup_font
@@ -40,8 +49,10 @@ module Satellite
       write_line "Dish Angle: %3d°" % dish_angle
       write_line "Probe angle to dish: %3d°" % probe_angle
       write_line "Difference: %3d°" % angle_difference
+      write_line "Signal strength: %f%%" % (signal_strength * 100)
+      write_line "Receiving: #{acceptable?}"
 
-      lazer if angle_difference.abs < 1
+      lazer if angle_difference.abs < 5
     end
 
     private
