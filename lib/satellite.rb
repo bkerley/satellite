@@ -2,7 +2,7 @@ require 'pp'
 require 'gosu'
 require 'singleton'
 
-%w{window sprite station dish probe signal lazer music}.each do |f|
+%w{window sprite station dish probe signal lazer music mars stage}.each do |f|
   require "satellite/#{f}"
 end
 

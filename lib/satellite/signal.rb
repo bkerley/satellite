@@ -5,9 +5,17 @@ module Satellite
 
     attr_accessor :dish, :probe, :window
 
+    GOAL = 300
+
     def initialize
       @score = 0
       @best_score = 0
+      @last_frame = 1
+      @timer = 1
+      @last_cycle = 0
+      @possibility = 0
+
+      @hit_goal = false
     end
 
     def angle_difference
@@ -59,27 +67,37 @@ module Satellite
     end
 
     def update
+      @last_frame = Time.now.to_f - @timer
+      @timer = Time.now.to_f
       @line = 0
+      @possibility += 1
       @score += 1 if acceptable?
       @best_score = @score if @score > @best_score
+      check_goal
       reset if probe.did_reset
     end
 
     def draw
-      write_line sprintf("Score: %d       Best: %d", @score, @best_score)
-      write_line "Dish Angle: %3d°" % dish_angle
-      write_line "Probe angle to dish: %3d°" % probe_angle
-      write_line "Difference: %3d°" % angle_difference
-      write_line "Signal strength: %.0f%%" % (signal_strength * 100)
-      write_line "Receiving: #{acceptable?}"
-      write_line "Beat: %.04f" % window.music.beat
+      write_line sprintf("Ticks: %d       Best: %d", @score, @best_score)
+      write_line "Last cycle: %d%%" % @last_cycle
+      write_line "Difficulty: %1.2f" % Stage.instance.difficulty
+      write_line "Frame time: %.0f ms" % (@last_frame * 1000)
+      write_line "FPS %d" % (1 / @last_frame)
 
       lazer if acceptable?
+      if @hit_goal
+        draw_winning
+      else
+        draw_progress
+      end
     end
 
     private
     def reset
+      @last_cycle = (@score * 100) / @possibility
       @score = 0
+      @possiblity = 0
+      @hit_goal = false
     end
 
     def write_line(text)
@@ -93,10 +111,41 @@ module Satellite
 
     def setup_font
       @font = Gosu::Font.new(window, 'media/UbuntuMono-Regular.ttf', 16)
+      @big = Gosu::Font.new(window, 'media/Ubuntu-Regular.ttf', 32)
     end
 
     def setup_lazer
       @lazer = Lazer.new dish
+    end
+
+    def check_goal
+      return if @hit_goal
+      if @score > GOAL
+        @hit_goal = true
+      end
+    end
+
+    def draw_progress
+      w = 800 * (@score.to_f / GOAL)
+      t = (window.height - 48) - (16 * window.music.beat)
+      b = window.height
+
+      window.draw_quad(0, t, Gosu::Color::GREEN,
+                       w, t, Gosu::Color::GREEN,
+                       0, b, Gosu::Color::BLACK,
+                       w, b, Gosu::Color::BLACK
+                       )
+    end
+
+    def draw_winning
+      m = "DOWNLOAD SUCCESSFUL"
+      w = @big.text_width m
+      b = window.music.beat
+      left = (window.width - w) / 2
+      top = (window.height - 48) - (16 * b)
+      @big.draw("DOWNLOAD SUCCESSFUL", 
+                left, top, 1, 
+                1, 1 + b)
     end
   end
 end

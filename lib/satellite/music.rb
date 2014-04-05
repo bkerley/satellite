@@ -11,6 +11,11 @@ module Satellite
     def initialize(window)
       self.window = window
       self.song = Gosu::Song.new self.window, 'media/satellite loop.mp3'
+#      song.volume = 0
+    end
+
+    def update
+      play unless self.song.playing?
     end
 
     def play
@@ -19,7 +24,6 @@ module Satellite
     end
 
     def beat
-      pp (current.to_i % MSPB) / MSPB
       peaky((current.to_i % MSPB) / MSPB)
     end
 

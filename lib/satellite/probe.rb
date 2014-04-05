@@ -4,8 +4,11 @@ module Satellite
     def initialize(window)
       super window
       Signal.instance.probe = self
+      Stage.instance.probe = self
 
       load_image 'probe.png'
+
+      @x = window.width + rand(64)
 
       start_position
       pick_angle
@@ -16,7 +19,7 @@ module Satellite
       @angle += @d_angle
       @did_reset = false
 
-      if @x < -image.width
+      if (@x < -image.width) || (@x > window.width + image.width)
         @did_reset = true
         start_position
         pick_angle
@@ -30,9 +33,13 @@ module Satellite
     private
 
     def start_position
-      @x = window.width + rand(128)
-      @y = rand(256)
-      @d_x = (rand * 2)
+      Stage.instance.next_stage
+
+      @y = (400 * Stage.instance.probe_altitude) + 20
+
+      sign = @d_x / @d_x.abs rescue -1
+
+      @d_x = Stage.instance.probe_speed * (-sign)
     end
 
     def pick_angle

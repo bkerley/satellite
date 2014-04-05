@@ -6,9 +6,10 @@ module Satellite
       super 800, 600, false
       self.caption = 'satellite'
 
-      @mars = Gosu::Image.new self, 'media/mars surface.png', true
+      @mars = Mars.new self
 
       Signal.instance.window = self
+      Stage.instance.window = self
 
       @sprites = [
                   Station.new(self),
@@ -21,13 +22,14 @@ module Satellite
     end
 
     def update
+      music.update
       @sprites.each(&:update)
 
       Signal.instance.update
     end
 
     def draw
-      @mars.draw -112, 472, 0
+      @mars.draw
 
       @sprites.each(&:draw)
 
