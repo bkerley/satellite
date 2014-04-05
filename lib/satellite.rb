@@ -1,6 +1,8 @@
 require 'gosu'
 
-require 'satellite/window'
+%w{window sprite station dish}.each do |f|
+  require "satellite/#{f}"
+end
 
 module Satellite
   def self.start
