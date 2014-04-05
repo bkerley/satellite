@@ -6,25 +6,27 @@ module Satellite
 
       @mars = Gosu::Image.new self, 'media/mars surface.png', true
 
-      @sprites = []
+      Signal.instance.window = self
 
-      @sprites << Station.new(self)
-      @sprites << Dish.new(self)
+      @sprites = [
+                  Station.new(self),
+                  Dish.new(self),
+                  Probe.new(self)
+                 ]
     end
 
     def update
       @sprites.each(&:update)
+
+      Signal.instance.update
     end
 
     def draw
-      black = Gosu::Color::BLACK
-      draw_quad(0, 0, black,
-                self.width, 0, black,
-                self.width, self.height, black,
-                0, self.height, black)
       @mars.draw -112, 472, 0
 
       @sprites.each(&:draw)
+
+      Signal.instance.draw
     end
   end
 end

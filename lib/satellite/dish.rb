@@ -1,28 +1,35 @@
 # -*- coding: utf-8 -*-
 module Satellite
   class Dish < Sprite
+    attr_accessor :angle
+    
     def initialize(window)
       super window
-      
-      load_image 'dish.png'
-      @angle = 0
+      Signal.instance.dish = self
 
-      @font = Gosu::Font.new(window, 'media/UbuntuMono-Regular.ttf', 24)
+      load_image 'dish.png'
+      self.angle = 0
     end
 
     def update
-      @angle = (@angle + 1) % 180
+      self.angle = (angle + 1) % 180
     end
 
     def draw
-      left = (window.width / 2) #- (image.width / 2)
-      top = window.height - 110
-      angle = - @angle 
+      image.draw_rot(center, base, 0, display_angle, 0.25, 0.5)
+    end
 
-      image.draw_rot(left, top, 0, angle, 0.25, 0.5)
+    def center
+      window.width / 2
+    end
 
-      @font.draw("Angle: %3d°" % @angle,
-                 4, 0, 0)
+    def base
+      window.height - 110
+    end
+
+    private
+    def display_angle
+      -angle
     end
   end
 end
