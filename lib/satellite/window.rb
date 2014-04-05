@@ -1,5 +1,7 @@
 module Satellite
   class Window < Gosu::Window
+    attr_accessor :music
+
     def initialize
       super 800, 600, false
       self.caption = 'satellite'
@@ -13,6 +15,9 @@ module Satellite
                   Dish.new(self),
                   Probe.new(self)
                  ]
+
+      self.music = Music.new self
+      self.music.play
     end
 
     def update

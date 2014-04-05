@@ -26,7 +26,7 @@ module Satellite
     end
 
     def draw
-      image.draw_rot(center, base, 0, display_angle, 0.25, 0.5)
+      image.draw_rot(center, base, 1, display_angle, 0.25, 0.5)
     end
 
     def center

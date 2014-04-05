@@ -12,7 +12,7 @@ module Satellite
     end
 
     def update
-      @x -= 1
+      @x -= @d_x
       @angle += @d_angle
       @did_reset = false
 
@@ -24,7 +24,7 @@ module Satellite
     end
 
     def draw
-      image.draw_rot(@x, @y, 0, @angle)
+      image.draw_rot(@x, @y, 1, @angle)
     end
 
     private
@@ -32,6 +32,7 @@ module Satellite
     def start_position
       @x = window.width + rand(128)
       @y = rand(256)
+      @d_x = (rand * 2)
     end
 
     def pick_angle

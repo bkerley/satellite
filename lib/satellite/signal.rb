@@ -19,8 +19,6 @@ module Satellite
     end
 
     def probe_angle
-      dx = probe.x.to_f - dish.center
-      dy = probe.y.to_f - dish.base
       a = Math.atan(-dy / dx) * (180.0 / Math::PI)
       if a < 0
         a = 180 + a
@@ -38,9 +36,26 @@ module Satellite
       signal_strength > 0.5
     end
 
+    def dx
+      probe.x.to_f - dish.center
+    end
+
+    def dy
+      probe.y.to_f - dish.base
+    end
+
+    def distance
+      Math.sqrt((dx ** 2) + (dy ** 2))
+    end
+
     def window=(value)
       @window = value
       setup_font
+    end
+
+    def dish=(value)
+      @dish = value
+      setup_lazer
     end
 
     def update
@@ -55,8 +70,9 @@ module Satellite
       write_line "Dish Angle: %3d°" % dish_angle
       write_line "Probe angle to dish: %3d°" % probe_angle
       write_line "Difference: %3d°" % angle_difference
-      write_line "Signal strength: %f%%" % (signal_strength * 100)
+      write_line "Signal strength: %.0f%%" % (signal_strength * 100)
       write_line "Receiving: #{acceptable?}"
+      write_line "Beat: %.04f" % window.music.beat
 
       lazer if acceptable?
     end
@@ -72,13 +88,15 @@ module Satellite
     end
     
     def lazer
-      window.draw_line(probe.x, probe.y, Gosu::Color::RED,
-                       dish.center, dish.base, Gosu::Color::RED,
-                       -1)
+      @lazer.draw distance
     end
 
     def setup_font
       @font = Gosu::Font.new(window, 'media/UbuntuMono-Regular.ttf', 16)
+    end
+
+    def setup_lazer
+      @lazer = Lazer.new dish
     end
   end
 end
