@@ -1,6 +1,6 @@
 module Satellite
   class Probe < Sprite
-    attr_reader :x, :y
+    attr_reader :x, :y, :did_reset
     def initialize(window)
       super window
       Signal.instance.probe = self
@@ -14,8 +14,10 @@ module Satellite
     def update
       @x -= 1
       @angle += @d_angle
-      
+      @did_reset = false
+
       if @x < -image.width
+        @did_reset = true
         start_position
         pick_angle
       end

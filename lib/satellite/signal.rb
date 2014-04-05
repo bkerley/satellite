@@ -6,6 +6,8 @@ module Satellite
     attr_accessor :dish, :probe, :window
 
     def initialize
+      @score = 0
+      @best_score = 0
     end
 
     def angle_difference
@@ -28,7 +30,7 @@ module Satellite
     end
 
     def signal_strength
-      divisor = ((angle_difference / 4) ** 2) + 1
+      divisor = ((angle_difference / 16) ** 2) + 1
       1.0 / divisor
     end
 
@@ -43,19 +45,27 @@ module Satellite
 
     def update
       @line = 0
+      @score += 1 if acceptable?
+      @best_score = @score if @score > @best_score
+      reset if probe.did_reset
     end
 
     def draw
+      write_line sprintf("Score: %d       Best: %d", @score, @best_score)
       write_line "Dish Angle: %3d°" % dish_angle
       write_line "Probe angle to dish: %3d°" % probe_angle
       write_line "Difference: %3d°" % angle_difference
       write_line "Signal strength: %f%%" % (signal_strength * 100)
       write_line "Receiving: #{acceptable?}"
 
-      lazer if angle_difference.abs < 5
+      lazer if acceptable?
     end
 
     private
+    def reset
+      @score = 0
+    end
+
     def write_line(text)
       @font.draw(text, 4, @line, 1)
       @line += @font.height

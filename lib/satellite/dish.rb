@@ -8,11 +8,21 @@ module Satellite
       Signal.instance.dish = self
 
       load_image 'dish.png'
-      self.angle = 0
+      self.angle = 90
     end
 
     def update
-      self.angle = (angle + 1) % 180
+      if window.button_down? Gosu::KbLeft
+        @angle += 1
+      elsif window.button_down? Gosu::KbRight
+        @angle -= 1
+      end
+
+      if @angle > 180
+        @angle = 180
+      elsif @angle < 0
+        @angle = 0
+      end
     end
 
     def draw
